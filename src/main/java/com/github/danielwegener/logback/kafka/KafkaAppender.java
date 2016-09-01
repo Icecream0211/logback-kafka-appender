@@ -58,7 +58,13 @@ public class KafkaAppender<E> extends KafkaAppenderConfig<E> {
         if (!checkPrerequisites()) return;
 
         lazyProducer = new LazyProducer();
-
+        /**
+         * 关掉kafka本身的日志，否则会出现日志打印死循环。
+         * 也可以在logback.xml中关闭，
+         * 	 <logger name="org.apache.kafka" level="OFF" />
+         * */
+        Logger kafkaClientLogger = (Logger) LoggerFactory.getLogger("org.apache.kafka");
+        kafkaClientLogger.setLevel(Level.OFF);
         super.start();
     }
 
